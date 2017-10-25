@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <title>00-JavaScript</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
+    <!-- définition des classes utilisées, attention à l'ordre -->
+    <script type="text/javascript" src="Counter.js"></script>
+    <script type="text/javascript" src="CounterStep.js"></script>
+
+
+    <!-- initialisation du contexte OpenGL dans le canvas -->
+    <script type="text/javascript">
+
+        // variable globale
+        var counter = null;
+
+        function main()
+        {
+            // un tableau
+            let couleurs = [1.0, 0.0, 0.5, 0.0, 0.3, 1.0];
+
+            console.log("le tableau couleurs contient "+couleurs.length+" éléments :");
+            for (let c of couleurs) {
+                console.log("   "+c);
+            }
+
+            console.log("indices des éléments :");
+            for (let i in couleurs) {
+                console.log("   couleurs["+i+"] = "+couleurs[i]);
+            }
+
+
+            // créer un compteur initialisé à 1
+            counter = new Counter(1);
+
+            // affichage dans la console
+            console.log("compteur = "+counter);
+            console.log("valeur = "+counter.getCount());
+
+            // incrémentation
+            counter.increment();
+            console.log("valeur = "+counter.getCount());
+
+            // incrémentation
+            counter.increment();
+
+            // rechercher le <p> appelé "debug"
+            let debug = document.getElementById("debug");
+            debug.innerHTML = "counter vaut "+counter.getCount();
+
+            // 2e compteur, mais de 2 en 2 à partir de 1
+            let counter2 = new CounterStep(2, 1);
+
+            // 5 incrémentations successives
+            for (let i=0; i<5; i++) {
+                counter2.increment();
+            }
+            console.log("valeur finale de counter2 = "+counter2.getCount());
+
+        }
+    </script>
+
+</head>
+
+<body onload="main();">
+
+    <p>Dans Firefox, appuyez sur F12 pour afficher l'outil d'inspection, puis choisissez l'onglet Console, et activez [seulement] Journal</p>
+
+    <p id="debug" style="background-color:SeaShell">
+        <!-- pour afficher des infos dans cette zone, faire :
+            document.getElementById("debug").innerHTML = "message...";
+        -->
+    </p>
+    <h2>Source files</h2>
+    <ul>
+        <li><a href="Counter.js">Counter.js</a></li>
+    </ul>
+
+</body>
+
+</html>
