@@ -123,6 +123,11 @@ class Cone
         mat4.mul(this.m_MatPVM, matP, this.m_MatVM);
         mat4.glUniformMatrix(this.m_MatrixLoc, this.m_MatPVM);
 
+        // activer et lier le buffer contenant les couleurs
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.m_ColorBufferId);
+        gl.enableVertexAttribArray(this.m_ColorLoc);
+        gl.vertexAttribPointer(this.m_ColorLoc, Utils.VEC3, gl.FLOAT, gl.FALSE, 0, 0);
+
         // activer et lier le buffer contenant les coordonnées du cone
         gl.bindBuffer(gl.ARRAY_BUFFER, this.m_ConeVertexBufferId);
         gl.enableVertexAttribArray(this.m_VertexLoc);
@@ -138,11 +143,6 @@ class Cone
 
         // dessiner les triangles du disque
         gl.drawArrays(gl.TRIANGLE_FAN, 0, this.VERTEX_COUNT);
-
-        // activer et lier le buffer contenant les couleurs
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.m_ColorBufferId);
-        gl.enableVertexAttribArray(this.m_ColorLoc);
-        gl.vertexAttribPointer(this.m_ColorLoc, Utils.VEC3, gl.FLOAT, gl.FALSE, 0, 0);
 
         // désactiver les buffers
         gl.disableVertexAttribArray(this.m_VertexLoc);
