@@ -1,7 +1,7 @@
 // Définition de la classe Scene
 
 // superclasses et classes nécessaires
-Requires("Disque");
+Requires("Cone");
 
 
 class Scene
@@ -10,7 +10,7 @@ class Scene
     constructor()
     {
         // créer les objets à dessiner
-        this.m_Disque = new Disque();
+        this.m_Cone = new Cone();
 
         // couleur du fond : gris foncé
         gl.clearColor(0.9, 0.9, 0.9, 1.0);
@@ -39,7 +39,7 @@ class Scene
         gl.viewport(0, 0, width, height);
 
         // matrice de projection
-        mat4.perspective(this.m_MatProjection, Utils.radians(15.0), width / height, 0.1, 12.0);
+        mat4.perspective(this.m_MatProjection, Utils.radians(30.0), width / height, 0.1, 12.0);
     }
 
 
@@ -51,18 +51,18 @@ class Scene
         // effacer l'écran
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-        // positionner la caméra en (0,0,9), c'est à dire la scène est décalée en z=-9
+        // positionner la caméra en (0,0,-7), c'est à dire la scène est décalée en z=-7
         mat4.identity(this.m_MatView);
-        mat4.translate(this.m_MatView, this.m_MatView, vec3.fromValues(0, 0, -9));
+        mat4.translate(this.m_MatView, this.m_MatView, vec3.fromValues(0, 0, -7));
 
-        // dessiner le disque animé
-        this.m_Disque.onDraw(this.m_MatProjection, this.m_MatView);
+        // dessiner le cone animé
+        this.m_Cone.onDraw(this.m_MatProjection, this.m_MatView);
     }
 
 
     /** supprime tous les objets de cette scène */
     destroy()
     {
-        this.m_Disque.destroy();
+        this.m_Cone.destroy();
     }
 }
