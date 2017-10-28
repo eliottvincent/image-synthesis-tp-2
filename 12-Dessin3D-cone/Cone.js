@@ -1,11 +1,11 @@
-﻿// Définition de la classe Disque
+﻿// Définition de la classe Cone
 
 
-class Disque
+class Cone
 {
     /**
      *
-     * @param nombre : nombre de triangles dans le disque
+     * @param nombre : nombre de triangles dans le cone
      */
     constructor(nombre = 100)
     {
@@ -59,25 +59,32 @@ class Disque
 
         /** VBOs */
 
-            // créer et remplir le buffer des coordonnées
-        let vertices = [
-            0.0, 0.0, 0.0   // pivot pour le DISQUE
+        // créer et remplir le buffer des coordonnées
+        let coneVertices = [
+            0.0, 2.0, 0.0,  // coordonnes du cone
         ];
 
-        /*let vertices = [
-            0.0, 2.0, 0.0   // pivot pour le CÔNE
-        ];*/
+        let disqueVertices = [
+            0.0, 0.0, 0.0,   // coordonnes du disque sous le cone
+        ];
+
         for (let i = 0; i <= nombre; i++) {
-            vertices.push(Math.cos((2 * Math.PI * i) / nombre));
-            vertices.push(0.0);
-            vertices.push(Math.sin((2 * Math.PI * i) / nombre));
+            coneVertices.push(Math.cos((2 * Math.PI * i) / nombre));
+            coneVertices.push(0.0);
+            coneVertices.push(Math.sin((2 * Math.PI * i) / nombre));
+
+            disqueVertices.push(Math.cos((2 * Math.PI * i) / nombre));
+            disqueVertices.push(0.0);
+            disqueVertices.push(Math.sin((2 * Math.PI * i) / nombre));
         }
-        this.m_VertexBufferId = Utils.makeFloatVBO(vertices, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+        this.m_ConeVertexBufferId = Utils.makeFloatVBO(coneVertices, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
+        this.m_DisqueVertexBufferId = Utils.makeFloatVBO(disqueVertices, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
 
         // créer et remplir le buffer des couleurs
         let colors = [
-            0.0, 0.5, 1.0   // PIVOT bleu
+            0.0, 0.5, 1.0,
         ];
+
         for (let i = 0; i <= nombre; i++) {
             let hsv = vec3.fromValues((i*1.0)/nombre, 1.0, 1.0);
             let rgb = Utils.hsv2rgb(hsv);
@@ -87,7 +94,7 @@ class Disque
         }
         this.m_ColorBufferId = Utils.makeFloatVBO(colors, gl.ARRAY_BUFFER, gl.STATIC_DRAW);
 
-        this.VERTEX_COUNT = vertices.length / 3;
+        this.VERTEX_COUNT = coneVertices.length / 3;
 
         // matrices de transformation intermédiaires (on pourrait économiser l'une d'elles)
         this.m_MatVM = mat4.create();       // V * M
@@ -116,18 +123,26 @@ class Disque
         mat4.mul(this.m_MatPVM, matP, this.m_MatVM);
         mat4.glUniformMatrix(this.m_MatrixLoc, this.m_MatPVM);
 
-        // activer et lier le buffer contenant les coordonnées
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.m_VertexBufferId);
+        // activer et lier le buffer contenant les coordonnées du cone
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.m_ConeVertexBufferId);
         gl.enableVertexAttribArray(this.m_VertexLoc);
         gl.vertexAttribPointer(this.m_VertexLoc, Utils.VEC3, gl.FLOAT, gl.FALSE, 0, 0);
+
+        // dessiner les triangles du cone
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, this.VERTEX_COUNT);
+
+        // activer et lier le buffer contenant les coordonnées du disque
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.m_DisqueVertexBufferId);
+        gl.enableVertexAttribArray(this.m_VertexLoc);
+        gl.vertexAttribPointer(this.m_VertexLoc, Utils.VEC3, gl.FLOAT, gl.FALSE, 0, 0);
+
+        // dessiner les triangles du disque
+        gl.drawArrays(gl.TRIANGLE_FAN, 0, this.VERTEX_COUNT);
 
         // activer et lier le buffer contenant les couleurs
         gl.bindBuffer(gl.ARRAY_BUFFER, this.m_ColorBufferId);
         gl.enableVertexAttribArray(this.m_ColorLoc);
         gl.vertexAttribPointer(this.m_ColorLoc, Utils.VEC3, gl.FLOAT, gl.FALSE, 0, 0);
-
-        // dessiner les triangles
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, this.VERTEX_COUNT);
 
         // désactiver les buffers
         gl.disableVertexAttribArray(this.m_VertexLoc);
@@ -144,7 +159,8 @@ class Disque
     {
         // supprimer le shader et les VBOs
         Utils.deleteShaderProgram(this.m_ShaderId);
-        Utils.deleteVBO(this.m_VertexBufferId);
+        Utils.deleteVBO(this.m_ConeVertexBufferId);
+        Utils.deleteVBO(this.m_DisqueVertexBufferId);
         Utils.deleteVBO(this.m_ColorBufferId);
     }
 }
