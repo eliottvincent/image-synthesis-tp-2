@@ -25,19 +25,20 @@ class Pyramide
         let srcFragmentShaderV2 = dedent
             `#version 300 es
             precision mediump float;
-            const vec3 fog_color = vec3(0.9, 0.9, 0.9);
             in vec3 frgColor;
             out vec4 glFragColor;
+            const vec3 fog_color = vec3(0.9, 0.9, 0.9);
             void main()
             {
+                
                 // distance entre l'écran et le fragment
                 float dist = gl_FragCoord.z / gl_FragCoord.w;
-                glFragColor = vec4(dist - 9.0, 9.0 - dist, 0, 1);return;
+                //glFragColor = vec4(dist - 9.0, 9.0 - dist, 0, 1);return;
                 // taux de brouillard en fonction de la distance
                 float fog = clamp((dist-6.0)/6.0, 0.0, 1.0);
                 //glFragColor = vec4(fog, fog, fog, 1);return;
                 // mélange couleur et brouillard
-                //glFragColor = vec4(mix(frgColor, fog_color, fog), 1.0);
+                glFragColor = vec4(mix(frgColor, fog_color, fog), 1.0);
 
                 // pour la mise au point de la perspective (near et far)
                 glFragColor = vec4(frgColor, 1.0);
