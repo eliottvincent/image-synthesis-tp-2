@@ -39,7 +39,7 @@ class Scene
         gl.viewport(0, 0, width, height);
 
         // matrice de projection
-        mat4.perspective(this.m_MatProjection, Utils.radians(15.0), width / height, 0.1, 12.0);
+        mat4.perspective(this.m_MatProjection, Utils.radians(30.0), width / height, 0.1, 12.0);
     }
 
 
@@ -51,9 +51,9 @@ class Scene
         // effacer l'écran
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-        // positionner la caméra en (0,0,9), c'est à dire la scène est décalée en z=-9
+        // positionner la caméra en (0,0,-9), c'est à dire la scène est décalée en z=-7
         mat4.identity(this.m_MatView);
-        mat4.translate(this.m_MatView, this.m_MatView, vec3.fromValues(0, 0, -9));
+        mat4.translate(this.m_MatView, this.m_MatView, vec3.fromValues(0, 0, -7));
 
         // dessiner le tetraèdre animé
         this.m_Pyramide.onDraw(this.m_MatProjection, this.m_MatView);
