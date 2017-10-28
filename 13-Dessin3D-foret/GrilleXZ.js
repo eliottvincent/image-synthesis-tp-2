@@ -12,9 +12,8 @@ class GrilleXZ
         /** shader */
 
             // version WebGL2
-
         let srcVertexShaderV2 = dedent
-                `#version 300 es
+            `#version 300 es
             uniform mat4 matrix;
             in vec3 glVertex;
             void main()
@@ -25,38 +24,26 @@ class GrilleXZ
         let srcFragmentShaderV2 = dedent
             `#version 300 es
             precision mediump float;
-            const vec3 fogColor = vec3(0.9, 0.9, 0.9);
-            const vec3 frgColor = vec3(0.4, 0.4, 0.4);
             out vec4 glFragColor;
             void main()
             {
-                // distance entre l'écran et le fragment
-                float dist = gl_FragCoord.z / gl_FragCoord.w;
-                //glFragColor = vec4(dist - 9.0, 9.0 - dist, 0, 1);return;
-                // taux de brouillard en fonction de la distance
-                float fog = clamp((dist-10.0)/10.0, 0.0, 1.0);
-                // mélange couleur et brouillard
-                glFragColor = vec4(mix(frgColor, fogColor, fog), 1.0);return;
-
-                // pour la mise au point de la perspective (near et far)
-                glFragColor = vec4(frgColor, 1.0);
+                glFragColor = vec4(0.7, 0.7, 0.7, 1.0);return;
             }`;
 
         // compiler le shader de dessin
-        this.m_ShaderId = Utils.makeShaderProgram(srcVertexShaderV2, srcFragmentShaderV2, "Triangle");
+        this.m_ShaderId = Utils.makeShaderProgram(srcVertexShaderV2, srcFragmentShaderV2, "Grille");
         console.debug("Source du vertex shader :\n"+srcVertexShaderV2);
         console.debug("Source du fragment shader :\n"+srcFragmentShaderV2);
 
         // déterminer où sont les variables attribute et uniform
         this.m_MatrixLoc = gl.getUniformLocation(this.m_ShaderId, "matrix");
-
-
         this.m_VertexLoc = gl.getAttribLocation(this.m_ShaderId, "glVertex");
+
         /** VBOs */
         // créer et remplir le buffer des coordonnées
-        const b = 0.5;
         let vertices = [];
-        for (let i = -nombre; i <= +nombre; i++) {
+        const b = 0.5;
+        for (let i = -nombre; i <= +nombre; i+= b) {
             // point de depart
             vertices.push(i);
             vertices.push(0.0);
